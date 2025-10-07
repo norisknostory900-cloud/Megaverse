@@ -1,6 +1,12 @@
+from django.contrib.auth.models import AbstractUser
 from django.db import models
-from django.contrib.auth.models import User
 
+class User(AbstractUser):
+    oauth_provider = models.CharField(max_length=20, blank=True, null=True)  # google / telegram
+    avatar_url = models.URLField(blank=True, null=True)
+
+    def __str__(self):
+        return self.username
 # User Profile
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -52,3 +58,13 @@ class AIMentorChat(models.Model):
 
     def __str__(self):
         return f"Chat by {self.user.username}"
+
+
+class ChatMessage(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='chats')
+    message = models.TextField()
+    response = models.TextField(blank=True, null=True)
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Chat from {self.user.username} at {self.timestamp}"

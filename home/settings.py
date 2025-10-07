@@ -3,6 +3,9 @@ Django settings for home project (MVP).
 """
 
 from pathlib import Path
+import os
+from dotenv import load_dotenv
+load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -96,3 +99,7 @@ REST_FRAMEWORK = {
         "rest_framework.renderers.JSONRenderer",
     ],
 }
+AUTH_USER_MODEL = 'main.User'
+
+load_dotenv()
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")

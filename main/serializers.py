@@ -1,12 +1,12 @@
+from .models import Profile, Post, Comment, Transaction, AIMentorChat, ChatMessage
 from rest_framework import serializers
-from django.contrib.auth.models import User
-from .models import Profile, Post, Comment, Transaction, AIMentorChat
-
+from .models import User
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ["id", "username", "email"]
+        fields = ['id', 'username', 'email', 'first_name', 'last_name', 'avatar_url', 'oauth_provider']
+
 
 
 class ProfileSerializer(serializers.ModelSerializer):
@@ -51,3 +51,10 @@ class AIMentorChatSerializer(serializers.ModelSerializer):
         model = AIMentorChat
         fields = ["id", "user", "prompt", "response", "created_at"]
         read_only_fields = ["response", "user"]
+
+
+class ChatMessageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ChatMessage
+        fields = ['id', 'user', 'message', 'response', 'timestamp']
+        read_only_fields = ['response', 'timestamp']
