@@ -1,0 +1,75 @@
+# Django va Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+*.db
+*.sqlite3
+
+# Virtual environment
+
+venv/
+env/
+ENV/
+.venv/
+.env.bak
+.env.local
+
+# Environment files
+exaple.env
+*.env
+
+# IDE / Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*.bak
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Static & media
+staticfiles/
+media/
+static/
+
+# Migrations cache (faqat kerak bo‘lsa qoldirasan)
+*/migrations/__pycache__/
+*/migrations/*.pyc
+
+# Logs
+*.log
+logs/
+debug.log
+
+# Compiled
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# Coverage / test
+.coverage
+htmlcov/
+.tox/
+.pytest_cache/
+
+# Jupyter / notebooks
+.ipynb_checkpoints
+
+# Node / front-end
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Local config
+config.json
+secrets.json
+
+# Gunicorn / Render / deploy
+*.pid
+*.sock
