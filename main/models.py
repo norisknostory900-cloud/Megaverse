@@ -1,13 +1,15 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
+
 class User(AbstractUser):
     oauth_provider = models.CharField(max_length=20, blank=True, null=True)  # google / telegram
     avatar_url = models.URLField(blank=True, null=True)
 
     def __str__(self):
         return self.username
-# User Profile
+
+
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     bio = models.TextField(blank=True, null=True)
@@ -18,9 +20,8 @@ class Profile(models.Model):
         return self.user.username
 
 
-# Community Feed
 class Post(models.Model):
-    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name="posts")
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -38,7 +39,6 @@ class Comment(models.Model):
         return f"Comment by {self.author.username}"
 
 
-# Wallet Transactions
 class Transaction(models.Model):
     sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name="sent")
     receiver = models.ForeignKey(User, on_delete=models.CASCADE, related_name="received")
@@ -49,7 +49,6 @@ class Transaction(models.Model):
         return f"{self.sender} → {self.receiver} : {self.amount}"
 
 
-# AI Mentor chat logs
 class AIMentorChat(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     prompt = models.TextField()

@@ -15,7 +15,7 @@ from .serializers import (
     AIMentorChatSerializer, ChatMessageSerializer
 )
 
-# 🔐 OpenAI API (env dan yuklanadi)
+# OpenAI client
 client = OpenAI(api_key=settings.OPENAI_API_KEY)
 
 
@@ -81,7 +81,6 @@ class TransactionViewSet(viewsets.ModelViewSet):
         sender = self.request.user
         amount = serializer.validated_data.get("amount")
 
-        # Qo‘shimcha xavfsizlik nazorati
         if amount and amount <= 0:
             raise ValidationError({"amount": "Amount must be positive."})
 
@@ -99,12 +98,14 @@ class AIMentorChatViewSet(viewsets.ModelViewSet):
         if not prompt:
             raise ValidationError({"prompt": "Prompt is required."})
 
-        # 🧠 Real OpenAI javobi
-        response = client.chat.completions.create(
-            model="gpt-3.5-turbo",
-            messages=[{"role": "user", "content": prompt}]
-        )
-        ai_response = response.choices[0].message.content
+        try:
+            response = client.chat.completions.create(
+                model="gpt-3.5-turbo",
+                messages=[{"role": "user", "content": prompt}]
+            )
+            ai_response = response.choices[0].message.content
+        except Exception as e:
+            ai_response = f"AI error: {e}"
 
         serializer.save(user=self.request.user, response=ai_response)
 
@@ -119,11 +120,25 @@ class ChatMessageCreateAPIView(generics.CreateAPIView):
         if not user_message:
             raise ValidationError({"message": "Message is required."})
 
-        # 🧠 OpenAI javobi
-        response = client.chat.completions.create(
-            model="gpt-3.5-turbo",
-            messages=[{"role": "user", "content": user_message}]
-        )
-        ai_response = response.choices[0].message.content
+        try:
+            response = client.chat.completions.create(
+                model="gpt-3.5-turbo",
+                messages=[{"role": "user", "content": user_message}]
+            )
+            ai_response = response.choices[0].message.content
+        except Exception as e:
+            ai_response = f"AI error: {e}"
 
         serializer.save(user=self.request.user, response=ai_response)
+
+
+class CommentViewSet(viewsets.ModelViewSet):
+    queryset = Comment.objects.all().order_by("-created_at")
+    serializer_class = CommentSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def perform_create(self, serializer):
+        post_id = self.request.data.get("post")
+        if not post_id:
+            raise ValidationError({"post": "Post ID is required"})
+        serializer.save(author=self.request.user)
