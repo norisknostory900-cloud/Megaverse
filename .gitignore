@@ -17,7 +17,7 @@ ENV/
 .env.local
 
 # Environment files
-exaple.env
+.env
 *.env
 
 # IDE / Editor
